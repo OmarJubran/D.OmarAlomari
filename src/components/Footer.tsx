@@ -85,7 +85,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 pt-6 text-center">
           <p className="text-sm text-slate-500">
-            © {new Date().getFullYear()} عيادة د. عمر العماري لطب الأسنان. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} عيادة د. عمر العمري لطب الأسنان. جميع الحقوق محفوظة.
           </p>
         </div>
       </div>
