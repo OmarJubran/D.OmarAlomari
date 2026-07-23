@@ -106,7 +106,6 @@ export default function Contact() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Info + contact form */}
           <div className="space-y-5 animate-fade-up">
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -153,7 +152,6 @@ export default function Contact() {
             </a>
           </div>
 
-          {/* Contact form + map */}
           <div className="space-y-5 animate-fade-up" style={{ animationDelay: '0.15s' }}>
             {status === 'success' ? (
               <div className="bg-white rounded-2xl shadow-sm p-8 text-center">

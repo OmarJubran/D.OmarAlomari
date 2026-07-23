@@ -59,7 +59,6 @@ Deno.serve(async (req: Request) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // --- Rate limiting ---
     const forwarded = req.headers.get("x-forwarded-for");
     const clientIp = forwarded ? forwarded.split(",")[0].trim() : "unknown";
 
@@ -86,7 +85,6 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // --- Parse and validate body ---
     const body = await req.json();
 
     const name = sanitize(body.name, MAX_NAME);
@@ -117,13 +115,11 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // --- Record rate limit entry ---
     await supabase.from("rate_limits").insert({
       identifier: clientIp,
       form_type: "appointment",
     });
 
-    // --- Insert appointment ---
     const { error: insertError } = await supabase.from("appointments").insert({
       name,
       phone,
@@ -139,7 +135,6 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // --- Clean old rate limit entries (background) ---
     const cutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS * 10).toISOString();
     await supabase.from("rate_limits").delete().lt("created_at", cutoff);
 
@@ -147,7 +142,7 @@ Deno.serve(async (req: Request) => {
       JSON.stringify({ success: true, message: "تم استلام طلب الموعد بنجاح" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
-  } catch (err) {
+  } catch (_err) {
     return new Response(
       JSON.stringify({ error: "حدث خطأ غير متوقع في الخادم" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },

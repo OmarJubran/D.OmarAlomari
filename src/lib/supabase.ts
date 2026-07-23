@@ -40,3 +40,15 @@ export type NewContactMessage = {
   phone: string;
   message: string;
 };
+
+export type Course = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  thumbnail: string;
+  video_url: string | null;
+  lessons_count: number;
+  duration: string;
+  level: string;
+};

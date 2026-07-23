@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Stethoscope } from 'lucide-react';
+import { Menu, X, Stethoscope, GraduationCap, LogIn, LogOut, UserCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
 
 const navLinks = [
   { label: 'الرئيسية', href: '#home' },
@@ -10,7 +11,12 @@ const navLinks = [
   { label: 'تواصل', href: '#contact' },
 ];
 
-export default function Navbar() {
+type NavbarProps = {
+  onOpenAuth: () => void;
+};
+
+export default function Navbar({ onOpenAuth }: NavbarProps) {
+  const { user, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -58,14 +64,52 @@ export default function Navbar() {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href="/courses"
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 flex items-center gap-1.5 ${
+                scrolled
+                  ? 'text-slate-600 hover:text-brand-600 hover:bg-brand-50'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <GraduationCap className="w-4 h-4" />
+              الدورات
+            </a>
+          </li>
         </ul>
 
-        <a
-          href="#booking"
-          className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-sm shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:shadow-brand-600/40 transition-all duration-200 hover:scale-105"
-        >
-          احجز موعداً
-        </a>
+        <div className="hidden lg:flex items-center gap-3">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className={`flex items-center gap-1.5 text-sm font-medium ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
+                <UserCircle className="w-5 h-5" />
+                {user.email}
+              </span>
+              <button
+                onClick={signOut}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                خروج
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all"
+            >
+              <LogIn className="w-4 h-4" />
+              دخول
+            </button>
+          )}
+          <a
+            href="#booking"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-sm shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:shadow-brand-600/40 transition-all duration-200 hover:scale-105"
+          >
+            احجز موعداً
+          </a>
+        </div>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -89,6 +133,32 @@ export default function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href="/courses"
+                onClick={() => setMenuOpen(false)}
+                className="block px-4 py-3 rounded-xl text-slate-600 hover:text-brand-600 hover:bg-brand-50 font-medium transition-colors"
+              >
+                الدورات
+              </a>
+            </li>
+            <li>
+              {user ? (
+                <button
+                  onClick={() => { signOut(); setMenuOpen(false); }}
+                  className="block w-full text-center px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold"
+                >
+                  تسجيل الخروج ({user.email})
+                </button>
+              ) : (
+                <button
+                  onClick={() => { onOpenAuth(); setMenuOpen(false); }}
+                  className="block w-full text-center px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold"
+                >
+                  دخول / تسجيل
+                </button>
+              )}
+            </li>
             <li>
               <a
                 href="#booking"

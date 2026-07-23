@@ -66,6 +66,15 @@ export function validateMessage(input: string): ValidationResult {
   return { valid: true, sanitized };
 }
 
+export function validateEmail(input: string): ValidationResult {
+  const sanitized = sanitizeText(input, 254);
+  if (!sanitized) return { valid: false, error: 'البريد الإلكتروني مطلوب', sanitized: '' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized)) {
+    return { valid: false, error: 'البريد الإلكتروني غير صحيح', sanitized };
+  }
+  return { valid: true, sanitized };
+}
+
 const RATE_LIMIT_KEY = 'form_submissions';
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 2;
@@ -83,7 +92,6 @@ export function checkRateLimit(formType: string): { allowed: boolean; error?: st
     if (recent.length >= RATE_LIMIT_MAX) {
       return { allowed: false, error: 'يرجى الانتظار دقيقة قبل إرسال طلب آخر' };
     }
-    recent.push({ formType, timestamp: now });
     const allRecent = entries.filter((e) => now - e.timestamp < RATE_LIMIT_WINDOW_MS);
     allRecent.push({ formType, timestamp: now });
     localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(allRecent.slice(-20)));
