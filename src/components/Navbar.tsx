@@ -41,7 +41,7 @@ export default function Navbar({ onOpenAuth }: NavbarProps) {
           </div>
           <div>
             <span className={`block font-display font-bold text-lg leading-tight ${scrolled ? 'text-slate-800' : 'text-white'}`}>
-              د. عمر العماري
+              د. عمر العمري
             </span>
             <span className={`block text-xs ${scrolled ? 'text-brand-600' : 'text-brand-100'}`}>
               عيادة الأسنان
