@@ -1,14 +1,21 @@
 import { useState, type FormEvent } from 'react';
-import { User, Phone, Calendar, Stethoscope, MessageSquare, Send, CheckCircle2, Loader2 } from 'lucide-react';
-import { supabase, type NewAppointment } from '@/lib/supabase';
+import { User, Phone, Calendar, Stethoscope, MessageSquare, Send, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
+import { validateName, validatePhone, validateDate, validateService, validateMessage, checkRateLimit } from '@/lib/validation';
 
 const serviceOptions = [
-  'Teeth Whitening',
-  'Dental Implants',
-  'Orthodontics',
-  'General Dentistry',
-  'Consultation',
+  'تبييض الأسنان',
+  'زراعة الأسنان',
+  'تقويم الأسنان',
+  'طب الأسنان العام',
+  'استشارة',
 ];
+
+type FieldErrors = {
+  name?: string;
+  phone?: string;
+  appointment_date?: string;
+  service?: string;
+};
 
 export default function Booking() {
   const [form, setForm] = useState({
@@ -18,36 +25,81 @@ export default function Booking() {
     service: '',
     message: '',
   });
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
+    setErrors({});
     setErrorMsg('');
 
-    const payload: NewAppointment = {
-      name: form.name,
-      phone: form.phone,
-      appointment_date: form.appointment_date,
-      service: form.service,
-      message: form.message || null,
-    };
+    const nameResult = validateName(form.name);
+    const phoneResult = validatePhone(form.phone);
+    const dateResult = validateDate(form.appointment_date);
+    const serviceResult = validateService(form.service);
+    const messageResult = validateMessage(form.message);
 
-    const { error } = await supabase.from('appointments').insert([payload]);
+    const fieldErrors: FieldErrors = {};
+    if (!nameResult.valid) fieldErrors.name = nameResult.error;
+    if (!phoneResult.valid) fieldErrors.phone = phoneResult.error;
+    if (!dateResult.valid) fieldErrors.appointment_date = dateResult.error;
+    if (!serviceResult.valid) fieldErrors.service = serviceResult.error;
 
-    if (error) {
-      setStatus('error');
-      setErrorMsg('Something went wrong. Please try again or call us directly.');
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
       return;
     }
 
-    setStatus('success');
-    setForm({ name: '', phone: '', appointment_date: '', service: '', message: '' });
+    const rateCheck = checkRateLimit('booking');
+    if (!rateCheck.allowed) {
+      setStatus('error');
+      setErrorMsg(rateCheck.error || 'يرجى الانتظار قبل إرسال طلب آخر');
+      return;
+    }
+
+    setStatus('loading');
+
+    try {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-appointment`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        headers['Authorization'] = `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`;
+      }
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: nameResult.sanitized,
+          phone: phoneResult.sanitized,
+          appointment_date: dateResult.sanitized,
+          service: serviceResult.sanitized,
+          message: messageResult.sanitized || null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        setStatus('error');
+        setErrorMsg(data.error || 'حدث خطأ ما. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة.');
+        return;
+      }
+
+      setStatus('success');
+      setForm({ name: '', phone: '', appointment_date: '', service: '', message: '' });
+    } catch {
+      setStatus('error');
+      setErrorMsg('تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.');
+    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -62,13 +114,13 @@ export default function Booking() {
       <div className="relative max-w-3xl mx-auto px-6">
         <div className="text-center mb-10 animate-fade-up">
           <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-brand-50 text-sm font-semibold mb-4">
-            Book Appointment
+            حجز موعد
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-            Schedule Your Visit
+            احجز زيارتك
           </h2>
           <p className="text-brand-50/70 leading-relaxed">
-            Fill out the form below and our team will confirm your appointment shortly.
+            املأ النموذج أدناه وسيتواصل فريقنا معك لتأكيد موعدك قريباً.
           </p>
         </div>
 
@@ -77,106 +129,114 @@ export default function Booking() {
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-10 h-10 text-green-600" />
             </div>
-            <h3 className="text-2xl font-extrabold text-slate-800 mb-3">Appointment Requested!</h3>
+            <h3 className="text-2xl font-extrabold text-slate-800 mb-3">تم إرسال طلبك بنجاح!</h3>
             <p className="text-slate-500 mb-6">
-              Thank you for choosing Dr. Omar Alomari Dental Clinic. We will contact you
-              shortly to confirm your appointment.
+              شكراً لاختيارك عيادة د. عمر العماري لطب الأسنان. سنتواصل معك
+              قريباً لتأكيد موعدك.
             </p>
             <button
               onClick={() => setStatus('idle')}
               className="px-6 py-3 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-colors"
             >
-              Book Another Appointment
+              احجز موعداً آخر
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-fade-up">
+          <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-fade-up" noValidate>
             <div className="grid md:grid-cols-2 gap-5">
-              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-slate-600 mb-2">الاسم الكامل</label>
                 <div className="relative">
-                  <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    placeholder="Your name"
-                    className="w-full pr-11 pl-4 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700"
+                    placeholder="اسمك"
+                    className={`w-full pr-4 pl-11 py-3 rounded-xl border outline-none transition-all text-slate-700 ${
+                      errors.name ? 'border-red-300 focus:ring-2 focus:ring-red-100' : 'border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
+                    }`}
                   />
                 </div>
+                {errors.name && <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" />{errors.name}</p>}
               </div>
 
-              {/* Phone */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">Phone Number</label>
+                <label className="block text-sm font-medium text-slate-600 mb-2">رقم الهاتف</label>
                 <div className="relative">
-                  <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="tel"
                     required
                     value={form.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     placeholder="+962 7X XXX XXXX"
-                    className="w-full pr-11 pl-4 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700"
+                    className={`w-full pr-4 pl-11 py-3 rounded-xl border outline-none transition-all text-slate-700 ${
+                      errors.phone ? 'border-red-300 focus:ring-2 focus:ring-red-100' : 'border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
+                    }`}
                   />
                 </div>
+                {errors.phone && <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" />{errors.phone}</p>}
               </div>
 
-              {/* Date */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">Preferred Date</label>
+                <label className="block text-sm font-medium text-slate-600 mb-2">التاريخ المفضل</label>
                 <div className="relative">
-                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                   <input
                     type="date"
                     required
                     min={today}
                     value={form.appointment_date}
                     onChange={(e) => handleChange('appointment_date', e.target.value)}
-                    className="w-full pr-11 pl-4 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700"
+                    className={`w-full pr-4 pl-11 py-3 rounded-xl border outline-none transition-all text-slate-700 ${
+                      errors.appointment_date ? 'border-red-300 focus:ring-2 focus:ring-red-100' : 'border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
+                    }`}
                   />
                 </div>
+                {errors.appointment_date && <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" />{errors.appointment_date}</p>}
               </div>
 
-              {/* Service */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">Service Needed</label>
+                <label className="block text-sm font-medium text-slate-600 mb-2">الخدمة المطلوبة</label>
                 <div className="relative">
-                  <Stethoscope className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                  <Stethoscope className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                   <select
                     required
                     value={form.service}
                     onChange={(e) => handleChange('service', e.target.value)}
-                    className="w-full pr-11 pl-4 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700 appearance-none bg-white"
+                    className={`w-full pr-4 pl-11 py-3 rounded-xl border outline-none transition-all text-slate-700 appearance-none bg-white ${
+                      errors.service ? 'border-red-300 focus:ring-2 focus:ring-red-100' : 'border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
+                    }`}
                   >
-                    <option value="" disabled>Select a service</option>
+                    <option value="" disabled>اختر خدمة</option>
                     {serviceOptions.map((s) => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
                 </div>
+                {errors.service && <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" />{errors.service}</p>}
               </div>
             </div>
 
-            {/* Message */}
             <div className="mt-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">Additional Notes (Optional)</label>
+              <label className="block text-sm font-medium text-slate-600 mb-2">ملاحظات إضافية (اختياري)</label>
               <div className="relative">
-                <MessageSquare className="absolute right-3 top-3 w-5 h-5 text-slate-400" />
+                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                 <textarea
                   rows={3}
                   value={form.message}
                   onChange={(e) => handleChange('message', e.target.value)}
-                  placeholder="Tell us about your concern or any specific requests..."
-                  className="w-full pr-11 pl-4 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700 resize-none"
+                  placeholder="أخبرنا عن مشكلتك أو أي طلبات محددة..."
+                  className="w-full pr-4 pl-11 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none transition-all text-slate-700 resize-none"
                 />
               </div>
             </div>
 
             {status === 'error' && (
-              <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+              <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 {errorMsg}
               </div>
             )}
@@ -189,12 +249,12 @@ export default function Booking() {
               {status === 'loading' ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Sending...
+                  جاري الإرسال...
                 </>
               ) : (
                 <>
                   <Send className="w-5 h-5" />
-                  Request Appointment
+                  طلب موعد
                 </>
               )}
             </button>

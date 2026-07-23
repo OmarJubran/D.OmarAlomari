@@ -1,15 +1,15 @@
 import { Award, Microscope, HeartHandshake, CheckCircle2 } from 'lucide-react';
 
 const points = [
-  'Graduated top of class from a leading dental university',
-  'Continuous training in the latest international techniques',
-  'Member of the International Dental Association',
+  'متخرج من أوائل دفعة جامعة أسنان رائدة',
+  'تدريب مستمر في أحدث التقنيات العالمية',
+  'عضو في جمعية طب الأسنان الدولية',
 ];
 
 const features = [
-  { icon: Award, title: 'Expert Experience', desc: 'Over 15 years of clinical excellence in cosmetic and restorative dentistry.' },
-  { icon: Microscope, title: 'Advanced Technology', desc: '3D imaging, digital scanners, and laser dentistry for precise, painless treatment.' },
-  { icon: HeartHandshake, title: 'Patient-First Care', desc: 'Personalized treatment plans in a comfortable, welcoming environment.' },
+  { icon: Award, title: 'خبرة متميزة', desc: 'أكثر من 15 عاماً من التميز السريري في طب وتجميل الأسنان.' },
+  { icon: Microscope, title: 'تقنيات متقدمة', desc: 'تصوير ثلاثي الأبعاد وماسحات رقمية وليزر لعلاج دقيق دون ألم.' },
+  { icon: HeartHandshake, title: 'رعاية تركز على المريض', desc: 'خطط علاج مخصصة في بيئة مريحة ومرحبة.' },
 ];
 
 export default function About() {
@@ -20,27 +20,26 @@ export default function About() {
           <div className="relative">
             <img
               src="https://images.pexels.com/photos/6627560/pexels-photo-6627560.jpeg"
-              alt="Dr. Omar Alomari"
+              alt="د. عمر العماري"
               className="rounded-3xl shadow-2xl w-full object-cover aspect-[4/5]"
             />
-            <div className="absolute -bottom-8 -left-8 bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl shadow-xl p-6 text-white max-w-xs hidden md:block">
-              <p className="text-3xl font-extrabold mb-1">15+ Years</p>
-              <p className="text-sm text-brand-50">of dedicated service in modern dentistry</p>
+            <div className="absolute -bottom-8 -right-8 bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl shadow-xl p-6 text-white max-w-xs hidden md:block">
+              <p className="text-3xl font-extrabold mb-1">+15 سنة</p>
+              <p className="text-sm text-brand-50">من الخدمة المخلصة في طب الأسنان الحديث</p>
             </div>
           </div>
         </div>
 
         <div className="animate-fade-up" style={{ animationDelay: '0.15s' }}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 text-sm font-semibold mb-4">
-            About the Clinic
+            عن العيادة
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-6 leading-tight">
-            Meet Dr. Omar Alomari
+            تعرف على د. عمر العماري
           </h2>
           <p className="text-slate-600 leading-relaxed mb-6">
-            Dr. Omar Alomari is a highly skilled dental specialist with a passion for transforming
-            smiles. With over 15 years of experience, he has helped thousands of patients achieve
-            optimal oral health using the most advanced dental technology available today.
+            د. عمر العماري طبيب أسنان مختص وشغوف بتحويل الابتسامات. بخبرة تزيد عن 15 عاماً،
+            ساعد آلاف المرضى على تحقيق صحة فموية مثالية باستخدام أحدث تقنيات طب الأسنان المتاحة اليوم.
           </p>
 
           <div className="space-y-3 mb-8">

@@ -5,33 +5,31 @@ export default function Footer() {
     <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
           <div>
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-11 h-11 rounded-2xl bg-brand-600 flex items-center justify-center">
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="font-display font-bold text-lg text-white">Dr. Omar Alomari</p>
-                <p className="text-xs text-brand-400">Dental Clinic</p>
+                <p className="font-display font-bold text-lg text-white">د. عمر العماري</p>
+                <p className="text-xs text-brand-400">عيادة الأسنان</p>
               </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Your smile deserves the best care. Modern dentistry with a gentle touch
-              and advanced technology.
+              ابتسامتك تستحق أفضل رعاية. طب أسنان حديث بلمسة لطيفة
+              وتقنيات متقدمة.
             </p>
           </div>
 
-          {/* Quick links */}
           <div>
-            <h4 className="font-bold text-white mb-4">Quick Links</h4>
+            <h4 className="font-bold text-white mb-4">روابط سريعة</h4>
             <ul className="space-y-2.5 text-sm">
               {[
-                { label: 'Home', href: '#home' },
-                { label: 'About Us', href: '#about' },
-                { label: 'Services', href: '#services' },
-                { label: 'Before & After', href: '#gallery' },
-                { label: 'Book Appointment', href: '#booking' },
+                { label: 'الرئيسية', href: '#home' },
+                { label: 'من نحن', href: '#about' },
+                { label: 'خدماتنا', href: '#services' },
+                { label: 'قبل وبعد', href: '#gallery' },
+                { label: 'احجز موعداً', href: '#booking' },
               ].map((l) => (
                 <li key={l.href}>
                   <a href={l.href} className="text-slate-400 hover:text-brand-400 transition-colors">
@@ -42,11 +40,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
           <div>
-            <h4 className="font-bold text-white mb-4">Our Services</h4>
+            <h4 className="font-bold text-white mb-4">خدماتنا</h4>
             <ul className="space-y-2.5 text-sm">
-              {['Teeth Whitening', 'Dental Implants', 'Orthodontics', 'General Dentistry'].map((s) => (
+              {['تبييض الأسنان', 'زراعة الأسنان', 'تقويم الأسنان', 'طب الأسنان العام'].map((s) => (
                 <li key={s}>
                   <a href="#services" className="text-slate-400 hover:text-brand-400 transition-colors">
                     {s}
@@ -56,13 +53,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="font-bold text-white mb-4">Get in Touch</h4>
+            <h4 className="font-bold text-white mb-4">تواصل معنا</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-brand-400 mt-0.5 flex-shrink-0" />
-                <span className="text-slate-400">King Hussein Street, Amman, Jordan</span>
+                <span className="text-slate-400">شارع الملك حسين، عمّان، الأردن</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-brand-400 flex-shrink-0" />
@@ -89,7 +85,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 pt-6 text-center">
           <p className="text-sm text-slate-500">
-            © {new Date().getFullYear()} Dr. Omar Alomari Dental Clinic. All rights reserved.
+            © {new Date().getFullYear()} عيادة د. عمر العماري لطب الأسنان. جميع الحقوق محفوظة.
           </p>
         </div>
       </div>

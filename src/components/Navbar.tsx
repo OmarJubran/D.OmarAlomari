@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Stethoscope } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Results', href: '#gallery' },
-  { label: 'Book', href: '#booking' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'الرئيسية', href: '#home' },
+  { label: 'من نحن', href: '#about' },
+  { label: 'خدماتنا', href: '#services' },
+  { label: 'النتائج', href: '#gallery' },
+  { label: 'الحجز', href: '#booking' },
+  { label: 'تواصل', href: '#contact' },
 ];
 
 export default function Navbar() {
@@ -35,10 +35,10 @@ export default function Navbar() {
           </div>
           <div>
             <span className={`block font-display font-bold text-lg leading-tight ${scrolled ? 'text-slate-800' : 'text-white'}`}>
-              Dr. Omar Alomari
+              د. عمر العماري
             </span>
             <span className={`block text-xs ${scrolled ? 'text-brand-600' : 'text-brand-100'}`}>
-              Dental Clinic
+              عيادة الأسنان
             </span>
           </div>
         </a>
@@ -64,7 +64,7 @@ export default function Navbar() {
           href="#booking"
           className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-sm shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:shadow-brand-600/40 transition-all duration-200 hover:scale-105"
         >
-          Book Appointment
+          احجز موعداً
         </a>
 
         <button
@@ -95,7 +95,7 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="block px-4 py-3 rounded-xl bg-brand-600 text-white text-center font-semibold"
               >
-                Book Appointment
+                احجز موعداً
               </a>
             </li>
           </ul>

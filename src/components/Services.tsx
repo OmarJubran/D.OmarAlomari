@@ -1,33 +1,33 @@
-import { Sparkles, Disc3, Wind, Stethoscope, ArrowRight } from 'lucide-react';
+import { Sparkles, Disc3, Wind, Stethoscope, ArrowLeft } from 'lucide-react';
 
 const services = [
   {
     icon: Sparkles,
-    title: 'Teeth Whitening',
-    desc: 'Professional whitening treatments that remove stains and brighten your smile by several shades in a single visit.',
+    title: 'تبييض الأسنان',
+    desc: 'علاجات تبييض احترافية تزيل البقع وتفتح لون أسنانك بدرجات عدة في زيارة واحدة.',
     image: 'https://images.pexels.com/photos/6627562/pexels-photo-6627562.jpeg',
-    features: ['Laser whitening', 'Safe & painless', 'Long-lasting results'],
+    features: ['تبييض بالليزر', 'آمن وغير مؤلم', 'نتائج تدوم طويلاً'],
   },
   {
     icon: Disc3,
-    title: 'Dental Implants',
-    desc: 'Permanent tooth replacement using titanium implants that look, feel, and function like natural teeth.',
+    title: 'زراعة الأسنان',
+    desc: 'استبدال دائم للأسنان المفقودة بزرعات من التيتانيوم تبدو وتعمل كالأسنان الطبيعية.',
     image: 'https://images.pexels.com/photos/6627560/pexels-photo-6627560.jpeg',
-    features: ['3D-guided surgery', 'Same-day implants', 'Natural appearance'],
+    features: ['جراحة موجهة ثلاثية الأبعاد', 'زرع في نفس اليوم', 'مظهر طبيعي'],
   },
   {
     icon: Wind,
-    title: 'Orthodontics',
-    desc: 'Straighten your teeth with traditional braces or clear aligners tailored to your lifestyle and needs.',
+    title: 'تقويم الأسنان',
+    desc: 'محاذاة أسنانك باستخدام التقويم التقليدي أو المصففات الشفافة وفقاً لنمط حياتك واحتياجاتك.',
     image: 'https://images.pexels.com/photos/6627566/pexels-photo-6627566.jpeg',
-    features: ['Clear aligners', 'Digital scanning', 'Faster treatment'],
+    features: ['مصففات شفافة', 'مسح رقمي', 'علاج أسرع'],
   },
   {
     icon: Stethoscope,
-    title: 'General Dentistry',
-    desc: 'Comprehensive oral care including checkups, cleanings, fillings, and preventive treatments for all ages.',
+    title: 'طب الأسنان العام',
+    desc: 'رعاية شاملة للفم تشمل الفحوصات والتنظيف والحشوات والعلاجات الوقائية لجميع الأعمار.',
     image: 'https://images.pexels.com/photos/6627556/pexels-photo-6627556.jpeg',
-    features: ['Routine checkups', 'Preventive care', 'Family dentistry'],
+    features: ['فحوصات دورية', 'رعاية وقائية', 'طب أسنان عائلي'],
   },
 ];
 
@@ -37,14 +37,14 @@ export default function Services() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-14 animate-fade-up">
           <span className="inline-block px-4 py-1.5 rounded-full bg-brand-100 text-brand-600 text-sm font-semibold mb-4">
-            Our Services
+            خدماتنا
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">
-            Comprehensive Dental Care
+            رعاية أسنان شاملة
           </h2>
           <p className="text-slate-500 leading-relaxed">
-            From routine cleanings to advanced cosmetic procedures, we offer a full range
-            of dental services to keep your smile healthy and beautiful.
+            من التنظيف الدوري إلى الإجراءات التجميلية المتقدمة، نقدم مجموعة كاملة
+            من خدمات طب الأسنان للحفاظ على ابتسامتك صحية وجميلة.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function Services() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-900/70 to-transparent" />
-                <div className="absolute bottom-4 right-4 w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-sm flex items-center justify-center">
+                <div className="absolute bottom-4 left-4 w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-sm flex items-center justify-center">
                   <service.icon className="w-6 h-6 text-brand-600" />
                 </div>
               </div>
@@ -81,8 +81,8 @@ export default function Services() {
                   href="#booking"
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 group/link"
                 >
-                  Book this service
-                  <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                  احجز هذه الخدمة
+                  <ArrowLeft className="w-4 h-4 group-hover/link:-translate-x-1 transition-transform" />
                 </a>
               </div>
             </div>

@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'system-ui', 'sans-serif'],
+        sans: ['Tajawal', 'Cairo', 'system-ui', 'sans-serif'],
+        display: ['Cairo', 'Tajawal', 'system-ui', 'sans-serif'],
       },
       colors: {
         brand: {

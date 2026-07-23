@@ -26,3 +26,17 @@ export type NewAppointment = {
   service: string;
   message?: string | null;
 };
+
+export type ContactMessage = {
+  id: string;
+  name: string;
+  phone: string;
+  message: string;
+  created_at: string;
+};
+
+export type NewContactMessage = {
+  name: string;
+  phone: string;
+  message: string;
+};
