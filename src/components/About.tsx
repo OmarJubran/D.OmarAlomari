@@ -35,7 +35,7 @@ export default function About() {
             عن العيادة
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-6 leading-tight">
-            تعرف على د. عمر العماري
+            تعرف على د. عمر العمري
           </h2>
           <p className="text-slate-600 leading-relaxed mb-6">
             د. عمر العماري طبيب أسنان مختص وشغوف بتحويل الابتسامات. بخبرة تزيد عن 15 عاماً،
