@@ -131,7 +131,7 @@ export default function Booking() {
             </div>
             <h3 className="text-2xl font-extrabold text-slate-800 mb-3">تم إرسال طلبك بنجاح!</h3>
             <p className="text-slate-500 mb-6">
-              شكراً لاختيارك عيادة د. عمر العماري لطب الأسنان. سنتواصل معك
+              شكراً لاختيارك عيادة د. عمر العمري لطب الأسنان. سنتواصل معك
               قريباً لتأكيد موعدك.
             </p>
             <button
