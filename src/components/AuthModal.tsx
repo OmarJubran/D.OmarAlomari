@@ -152,7 +152,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               >
               </button>
               {/* Google Sign-In Button */}
-<button>
+<button
   type="button"
   onClick={async () => {
     await supabase.auth.signInWithOAuth({
